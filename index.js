@@ -53,6 +53,21 @@ async function run() {
       console.log(result);
       res.send(result);
     });
+
+    //load single service review with query (service/_id)
+
+    app.get("/reviews", async (req, res) => {
+      console.log(req.query.id);
+      let query = {};
+      if (req.query.id) {
+        query = {
+          service: req.query.id,
+        };
+      }
+      const cursor = reviewCollection.find(query);
+      const orders = await cursor.toArray();
+      res.send(orders);
+    });
     //to delete review
 
     //to load review with service id
