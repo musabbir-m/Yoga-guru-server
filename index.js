@@ -21,6 +21,7 @@ async function run() {
   try {
     //collections
     const yogaCollection = client.db("yogaCoach").collection("services");
+    const reviewCollection = client.db("yogaCoach").collection("reviews");
     //load 3 services
     app.get("/services", async (req, res) => {
       const query = {};
@@ -44,6 +45,17 @@ async function run() {
       const service = await yogaCollection.findOne(query);
       res.send(service);
     });
+
+    //to post review
+    app.post("/review", async (req, res) => {
+      const order = req.body;
+      const result = await reviewCollection.insertOne(order);
+      console.log(result);
+      res.send(result);
+    });
+    //to delete review
+
+    //to load review with service id
   } finally {
     //finally
   }
