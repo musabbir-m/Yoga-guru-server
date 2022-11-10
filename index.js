@@ -54,6 +54,15 @@ async function run() {
       res.send(result);
     });
 
+    //to add service
+
+    app.post("/service", async (req, res) => {
+      const service = req.body;
+      const result = await yogaCollection.insertOne(service);
+      console.log(result);
+      res.send(result);
+    });
+
     //load single service review with query (service/_id)
 
     app.get("/reviews", async (req, res) => {
@@ -65,10 +74,48 @@ async function run() {
         };
       }
       const cursor = reviewCollection.find(query);
-      const orders = await cursor.toArray();
-      res.send(orders);
+      const reviews = await cursor.toArray();
+      res.send(reviews);
+    });
+
+    //to get my reviews with email querry
+    app.get("/myreviews", async (req, res) => {
+      console.log(req.query.email);
+      let query = {};
+      if (req.query.email) {
+        query = {
+          email: req.query.email,
+        };
+      }
+      const cursor = reviewCollection.find(query);
+      const reviews = await cursor.toArray();
+      res.send(reviews);
     });
     //to delete review
+
+    app.delete("/service/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await reviewCollection.deleteOne(query);
+      res.send(result);
+      console.log(result);
+    });
+
+    //update review
+
+    app.patch("/service/:id", async (req, res) => {
+      const id = req.params.id;
+      const text = req.body.text;
+      const query = { _id: ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          reviewText: text,
+        },
+      };
+      const result = await reviewCollection.updateOne(query, updateDoc);
+      res.send(result);
+      console.log(result);
+    });
 
     //to load review with service id
   } finally {
